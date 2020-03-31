@@ -41,7 +41,7 @@ yarn start
 
 ### Compilation of mobile projects
 
-**check backend server paths before compiling the mobile applications**
+**check backend server paths, before compiling the mobile applications, configure address to server**
 
 _For more examples and usage, please refer to the [React Native!](https://reactnative.dev/)._
 
