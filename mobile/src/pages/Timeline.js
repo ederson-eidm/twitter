@@ -1,32 +1,48 @@
 import React, {Component} from 'react';
-import {Text, View, FlatList, StyleSheet, TouchableOpacity} from 'react-native';
+import socket from 'socket.io-client';
+import {View, FlatList, StyleSheet, TouchableOpacity} from 'react-native';
 import api from '../services/api';
-import Tweet from '../components/Tweet';
-
 import Icon from 'react-native-vector-icons/MaterialIcons';
 Icon.loadFont();
 
+import Tweet from '../components/Tweet';
+
 export default class Timeline extends Component {
-  static navigationOptions = {
+  static navigationOptions = ({navigation}) => ({
     title: 'Início',
     headerRight: () => (
-      <TouchableOpacity onPress={() => {}}>
+      <TouchableOpacity onPress={() => navigation.navigate('New')}>
         <Icon
-          style={{marginRight:20}}
+          style={{marginRight: 20}}
           name="add-circle-outline"
           size={24}
           color="#4BB0EE"
         />
       </TouchableOpacity>
     ),
-  };
+  });
   state = {
     tweets: [],
   };
   async componentDidMount() {
+    this.subscribeToEvents();
     const response = await api.get('tweets');
     this.setState({tweets: response.data});
   }
+  subscribeToEvents = () => {
+    const io = socket('http://192.168.0.194:3000');
+
+    io.on('tweet', data => {
+      this.setState({ tweets: [data, ...this.state.tweets]});
+    });
+    io.on('like', data => {
+      this.setState({
+        tweets: this.state.tweets.map(tweet => 
+          tweet._id === data._id ? data : tweet
+        ),
+      });
+    });
+  };
   render() {
     return (
       <View style={styles.container}>

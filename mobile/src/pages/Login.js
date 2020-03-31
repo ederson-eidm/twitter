@@ -16,15 +16,17 @@ export default class Login extends Component {
     username: '',
   };
   async componentDidMount() {
-    const username = await AsyncStorage.getItem('@OmniStack:username');
+    const username = await AsyncStorage.getItem('@GoTwitter:username');
     if (username) {
       this.props.navigation.navigate('App');
     }
   }
   handleLogin = async () => {
     const {username} = this.state;
-    if (!username.length) return;
-    await AsyncStorage.setItem('@OmniStack:username', username);
+    if (!username.length) {
+      return;
+    }
+    await AsyncStorage.setItem('@GoTwitter:username', username);
     this.props.navigation.navigate('Timeline');
   };
   handleInputChange = (username) => {
